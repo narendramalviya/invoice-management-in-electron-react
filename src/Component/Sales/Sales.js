@@ -2,16 +2,20 @@ import React, { Component } from "react";
 import "./Sales.css";
 class Sales extends Component {
 	state = {
-		person: {
+		billDetails: {
 			name: "Narendra malviya",
 			phone: "+917742401557",
 			address: "Pali rajasthann India",
-			invoiceNo:'',
-			totalAmount:'0.00',
-			paymentStatus:"Pending",
-			invoiceType:'sales'
+			invoiceNo: "",
+			invoiceDate: "2020-09-01",
+			taxPercentage: 0,
+			taxAmount: 0,
+			billAmount: 0,
+			taxType: "",
+			paymentStatus: "NULL",
+			invoiceType: "sales",
 		},
-		billItemes: [
+		billItems: [
 			{
 				description: "10 pcs. of paper rim",
 				quantity: 12,
@@ -32,20 +36,23 @@ class Sales extends Component {
 			rate: 120,
 			amount: 1200,
 		},
-		totalAmount: 0,
+		listItemAmountTotal: 0,
+		dueAmount: 0,
+		paidAmount: 0,
 	};
 
 	// on change handler for select item and quantity
-	personOnChangeHandler = (event) => {
+	billDetailsOnChangeHandler = (event) => {
+		const { name, value } = event.target;
 		this.setState({
-			person: {
-				...this.state.person,
-				[event.target.name]: event.target.value,
+			billDetails: {
+				...this.state.billDetails,
+				[name]: value,
 			},
 		});
 	};
 	billItemOnChangeHandler = (event) => {
-		const [name, value] = event.target;
+		const { name, value } = event.target;
 		this.setState({
 			item: {
 				...this.state.item,
@@ -53,42 +60,58 @@ class Sales extends Component {
 			},
 		});
 	};
-	// calculate total amount
+	// calculate total amount of list items
 	calculateAmount = () => {
-		const allItems = [...this.state.billItemes];
-
-		let billAmount = allItems.reduce((total, item) => {
-			console.log(item, total);
+		const allItems = [...this.state.billItems];
+		// get total list items amount
+		let listItemsAmount = allItems.reduce((total, item) => {
 			return total + item.amount;
 		});
-		return billAmount;
+		// calulate tax amount based on tax rate in percentage
+		const taxRate = this.state.billDetails.taxPercentage;
+		let taxAmount = (listItemsAmount * taxRate) / 100;
+		// final bill amount = (tax Amount + list item amount )
+		let totalBillAmount = listItemsAmount + taxAmount;
+
+		// updating state for all amounts - list items amount,total bill amount and tax amount
+		this.setState({
+			billDetails:{
+				...this.state.billDetails,
+				billAmount:totalBillAmount,
+				taxAmount:taxAmount
+			},
+			listItemAmountTotal:listItemsAmount
+			
+		});
 	};
 	// add button handler to adding selected item to list
 	addButtonHandler = () => {
-		let billItemsState = [...this.state.billItemes];
+		let billItemsState = [...this.state.billItems];
 		const billItem = { ...this.state.item };
 		billItemsState.push(billItem);
-		// update state & update total amount
-		const totalBillAmount = this.calculateAmount();
+		// update state and update total amount calling calculateAmount function 
+		// after updating state
+		
 		this.setState({
-			billItemes: billItemsState,
-			totalAmount: totalBillAmount,
+			billItems: billItemsState,
+		},()=>{
+			this.calculateAmount();
 		});
 	};
 	removeAddedItem = (index) => {
 		// alert(index);
-		let oldbillItemes = [...this.state.billItemes];
-		// remove item then update
-		oldbillItemes.splice(index, 1);
+		let oldbillItems = [...this.state.billItems];
+		// remove item then update state
+		oldbillItems.splice(index, 1);
 
-		this.setState({ billItemes: oldbillItemes });
+		this.setState({ billItems: oldbillItems });
 	};
 	render() {
 		// selected items list
-		let billItemes = "";
-		if (this.state.billItemes !== null) {
-			let billItemState = [...this.state.billItemes];
-			billItemes = billItemState.map((item, index) => {
+		let billItems = "";
+		if (this.state.billItems !== null) {
+			let billItemState = [...this.state.billItems];
+			billItems = billItemState.map((item, index) => {
 				return (
 					<tr key={index}>
 						<td>{index + 1}</td>
@@ -107,14 +130,15 @@ class Sales extends Component {
 					</tr>
 				);
 			});
-		} else
-			billItemes = (
+		} else {
+			billItems = (
 				<tr>
 					<h3>Loading ...</h3>
 				</tr>
 			);
+		}
 		//   TODO: pending work
-		//
+		
 		return (
 			<div className="container border border-success rounded">
 				<h3> Sales </h3>
@@ -133,8 +157,10 @@ class Sales extends Component {
 										type="text"
 										className="form-control"
 										id="name"
-										onChange={this.personOnChangeHandler}
-										value={this.state.person.name}
+										onChange={
+											this.billDetailsOnChangeHandler
+										}
+										value={this.state.billDetails.name}
 										name="name"
 									/>
 								</div>
@@ -151,8 +177,10 @@ class Sales extends Component {
 										type="text"
 										className="form-control"
 										id="phone"
-										onChange={this.personOnChangeHandler}
-										value={this.state.person.phone}
+										onChange={
+											this.billDetailsOnChangeHandler
+										}
+										value={this.state.billDetails.phone}
 										name="phone"
 									/>
 								</div>
@@ -169,14 +197,16 @@ class Sales extends Component {
 										type="text"
 										className="form-control"
 										id="address"
-										onChange={this.personOnChangeHandler}
-										value={this.state.person.address}
+										onChange={
+											this.billDetailsOnChangeHandler
+										}
+										value={this.state.billDetails.address}
 										name="address"
 									/>
 								</div>
 							</div>
 						</div>
-						
+
 						<div className="col-5">
 							<div className="form-group row ">
 								<label
@@ -192,6 +222,10 @@ class Sales extends Component {
 										id="invoiceNo"
 										name="invoiceNo"
 										placeholder="invoice no."
+										onChange={
+											this.billDetailsOnChangeHandler
+										}
+										value={this.state.billDetails.invoiceNo}
 									/>
 								</div>
 							</div>
@@ -209,29 +243,19 @@ class Sales extends Component {
 										id="invoiceDate"
 										name="invoiceDate"
 										placeholder="date"
+										onChange={
+											this.billDetailsOnChangeHandler
+										}
+										value={
+											this.state.billDetails.invoiceDate
+										}
 									/>
 								</div>
 							</div>
+
 							<div className="form-group row">
 								<label
-									htmlFor="dueAmount"
-									className="col-sm-3 col-form-label"
-								>
-									Due Amount
-								</label>
-								<div className="col-sm-5">
-									<input
-										type="text"
-										className="form-control"
-										id="dueAmount"
-										name="dueAmount"
-										placeholder="due amount"
-									/>
-								</div>
-							</div>
-							<div className="form-group row">
-								<label
-									htmlFor="Amount"
+									htmlFor="billAmount"
 									className="col-sm-3 col-form-label"
 								>
 									Amount
@@ -240,14 +264,20 @@ class Sales extends Component {
 									<input
 										type="text"
 										className="form-control"
-										id="Amount"
-										name="amount"
+										id="billAmount"
+										name="billAmount"
 										placeholder="0.00"
+										onChange={
+											this.billDetailsOnChangeHandler
+										}
+										value={
+											this.state.billDetails.billAmount
+										}
 									/>
 								</div>
 							</div>
 						</div>
-						{JSON.stringify(this.state.person)}
+						{JSON.stringify(this.state.billDetails)}
 					</div>
 
 					{/* items form  */}
@@ -268,15 +298,16 @@ class Sales extends Component {
 							</tr>
 						</thead>
 						<tbody>
-							{billItemes}
+							{billItems}
 							<tr className="border ">
 								<td colSpan="4">Total</td>
-								<td>{this.state.totalAmount}</td>
+								<td>{this.state.listItemAmountTotal}</td>
 								<td></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
+				{/* Bill item form */}
 				<div className="border border-success rounded p-3">
 					<p>Items Details</p>
 					<div className="form-group row">
@@ -331,7 +362,7 @@ class Sales extends Component {
 						</div>
 
 						<label
-							for="listAmount"
+							for="itemAmount"
 							className="col-sm-1 col-form-label"
 						>
 							Amount
@@ -340,7 +371,7 @@ class Sales extends Component {
 							<input
 								type="number"
 								className="form-control"
-								id="listAmount"
+								id="itemAmount"
 								onChange={this.billItemOnChangeHandler}
 								value={this.state.item.amount}
 								name="amount"
@@ -351,7 +382,7 @@ class Sales extends Component {
 						<div className="col-6"></div>
 					</div>
 				</div>
-				{/* {JSON.stringify(this.state.item)} */}
+				{JSON.stringify(this.state.item)}
 				<div className="row mb-2">
 					<div className="col-9 mt-2">
 						<button
@@ -367,7 +398,14 @@ class Sales extends Component {
 							type="text"
 							id="tax"
 							className="form-control"
-							placeholder="text rate %"
+							placeholder="tax rate %"
+						/>
+						<label htmlFor="taxType">Tax Type:</label>
+						<input
+							type="text"
+							id="taxType"
+							className="form-control"
+							placeholder="SGST/CGST..."
 						/>
 						<label htmlFor="taxAmount">Tax Amount:</label>
 						<input
@@ -375,10 +413,11 @@ class Sales extends Component {
 							id="taxAmount"
 							className="form-control"
 						/>
-						<label htmlFor="totalAmount">Total:</label>
+
+						<label htmlFor="totalBillAmount">Total:</label>
 						<input
 							type="text"
-							id="totalAmount"
+							id="totalBillAmount"
 							className="form-control"
 						/>
 						<label htmlFor="due">Amount Due:</label>

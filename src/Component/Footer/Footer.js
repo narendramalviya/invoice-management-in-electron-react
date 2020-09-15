@@ -8,7 +8,7 @@ const Footer = () => {
 	// 	"margin-top": "10px",
 	// };
 	return (
-		<div>
+		<div className="m-1">
 			<footer id="footer" className="footer-1">
 				<div className="main-footer widgets-dark typo-light">
 					<div className="container">
