@@ -15,6 +15,7 @@ connection.connect(function (err) {
 	if (err) {
 		console.log("error code ", err.code);
 		console.log("err fatal", err.fatal);
+		alert('some error occured!!,db not connected restart application!! ');
 	} else {
 		console.log("db connected");
 	}

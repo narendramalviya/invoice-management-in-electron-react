@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 class Invoice extends Component {
 	render() {
-		console.log(this.props.invoiceDetails);
+		// console.log(this.props.invoiceDetails);
 
 		return (
 			<div className="container-fluid">

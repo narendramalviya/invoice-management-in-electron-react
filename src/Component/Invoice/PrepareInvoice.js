@@ -1,69 +1,74 @@
 import React, { Component } from "react";
-import { Link, Route, Switch } from "react-router-dom";
+// import { Link, Route, Switch } from "react-router-dom";
 import "./PrepareInvoice.css";
 import Invoice from "./Invoice";
+import "../dbApi/PrepareInvoiceDbApi";
 class PrepareInvoice extends Component {
 	state = {
-		billDetails: {
+		invoiceDetails: {
 			name: "Narendra malviya",
 			phone: "+917742401557",
 			address: "Pali rajasthann India",
-			invoiceNo: "",
+			invoiceNo: "1012020",
 			invoiceDate: "2020-09-01",
-			taxes: 0,
-			taxAmount: 0,
-			billAmount: 0,
-			taxType: "",
+			// igst ,cgst,sgst type taxes
+			igst: 10,
+			cgst: 5,
+			sgst: 7,
+			totalTaxAmount: 0,
+			totalInvoiceAmount: 0,
 			paymentStatus: "NULL",
 			invoiceType: "",
 		},
-		billItems: [
-			// {
-			// 	description: "10 pcs. of paper rim",
-			// 	quantity: 12,
-			// 	rate: 120,
-			// 	amount: 1440,
-			// },
-			// { description: "5 pcs. pen", quantity: 10, rate: 15, amount: 150 },
-			// {
-			// 	description: "10 pcs. ink caritage",
-			// 	quantity: 10,
-			// 	rate: 300,
-			// 	amount: 3000,
-			// },
+		invoiceItems: [
+			{
+				description: "10 pcs. of paper rim",
+				hsn_sac_No: "2321",
+				quantity: 12,
+				rate: 120,
+				amount: 1440,
+			},
+			{ description: "5 pcs. pen", quantity: 10, rate: 15, amount: 150 },
+			{
+				description: "10 pcs. ink caritage",
+				hsn_sac_No: "2321",
+				quantity: 10,
+				rate: 300,
+				amount: 3000,
+			},
 		],
 		item: {
 			description: "10 pcs. of paper rim",
+			hsn_sac_No: "2321",
 			quantity: 10,
 			rate: 120,
 			amount: 1200,
 		},
 		listItemAmountTotal: 0,
-		dueAmount: 0,
-		paidAmount: 0,
+
 		previewInvoice: true,
 	};
 	componentDidMount() {
 		this.setState({
-			billDetails: {
-				...this.state.billDetails,
+			invoiceDetails: {
+				...this.state.invoiceDetails,
 				invoiceType: this.props.invoiceType,
 			},
 		});
 	}
-	// on change handler for select item and quantity
-	billDetailsOnChangeHandler = (event) => {
+	// on change handler for
+	invoiceDetailsOnChangeHandler = (event) => {
 		const { name, value } = event.target;
 
 		this.setState({
-			billDetails: {
-				...this.state.billDetails,
+			invoiceDetails: {
+				...this.state.invoiceDetails,
 				[name]: value,
 			},
 		});
 	};
 	// mehtod for updating item state
-	billItemOnChangeHandler = (event) => {
+	invoiceItemOnChangeHandler = (event) => {
 		const { name, value } = event.target;
 		let itemState = { ...this.state.item };
 		//    get old item state and update new changed value
@@ -79,7 +84,8 @@ class PrepareInvoice extends Component {
 	};
 	// calculate total amount of list items
 	calculateAmount = () => {
-		const allItems = [...this.state.billItems];
+		// alert('clicked!!')
+		const allItems = [...this.state.invoiceItems];
 		// get total list items amount
 
 		let listItemsAmount = 0;
@@ -87,17 +93,29 @@ class PrepareInvoice extends Component {
 			listItemsAmount += item.amount;
 		}
 
-		// calulate tax amount based on tax rate in percentage
-		const taxRate = this.state.billDetails.taxRate;
-		let taxAmount = (listItemsAmount * taxRate) / 100;
-		// final bill amount = (tax Amount + list item amount )
-		let totalBillAmount = listItemsAmount + taxAmount;
+		// calulate isgt,cgst,sgst taxes amount ,based on tax rate in percentage
 
-		// updating state for all amounts - list items amount,total bill amount and tax amount
+		const igstTaxRate = this.state.invoiceDetails.igst;
+		const cgstTaxRate = this.state.invoiceDetails.cgst;
+		const sgstTaxRate = this.state.invoiceDetails.sgst;
+
+		let taxAmount =
+				(listItemsAmount * igstTaxRate) / 100 +
+				(listItemsAmount * cgstTaxRate) / 100 +
+				(listItemsAmount * sgstTaxRate) / 100;
+		// toFixed() set two digit after decimal points
+		// returns string formeted number 
+		// so place + sign before the string ,to convert string to number
+		//example :-  3445.337 --> 3445.34
+		
+		// final invoice amount = (tax Amount + list item amount )
+		let totalInvoiceAmount = (listItemsAmount + taxAmount);
+	
+		// updating state for all amounts -> list items amount,total bill amount and tax amount
 		this.setState({
-			billDetails: {
-				...this.state.billDetails,
-				billAmount: totalBillAmount,
+			invoiceDetails: {
+				...this.state.invoiceDetails,
+				totalInvoiceAmount: totalInvoiceAmount,
 				taxAmount: taxAmount,
 			},
 			listItemAmountTotal: listItemsAmount,
@@ -105,15 +123,15 @@ class PrepareInvoice extends Component {
 	};
 	// add button handler to adding selected item to list
 	addButtonHandler = () => {
-		let billItemsState = [...this.state.billItems];
+		let invoiceItemsState = [...this.state.invoiceItems];
 		const billItem = { ...this.state.item };
-		billItemsState.push(billItem);
+		invoiceItemsState.push(billItem);
 		// update state and update total amount calling calculateAmount function
 		// after updating state
 
 		this.setState(
 			{
-				billItems: billItemsState,
+				invoiceItems: invoiceItemsState,
 			},
 			() => {
 				this.calculateAmount();
@@ -122,24 +140,25 @@ class PrepareInvoice extends Component {
 	};
 	removeAddedItem = (index) => {
 		// alert(index);
-		let oldbillItems = [...this.state.billItems];
+		let oldinvoiceItems = [...this.state.invoiceItems];
 		// remove item then update state
-		oldbillItems.splice(index, 1);
+		oldinvoiceItems.splice(index, 1);
 
-		this.setState({ billItems: oldbillItems }, () => {
+		this.setState({ invoiceItems: oldinvoiceItems }, () => {
 			this.calculateAmount();
 		});
 	};
 	render() {
 		const currentPath = this.props.match.path;
 		// selected items list
-		let billItems = "";
-		if (this.state.billItems !== null) {
-			let billItemState = [...this.state.billItems];
-			billItems = billItemState.map((item, index) => {
+		let invoiceItems = "";
+		if (this.state.invoiceItems !== null) {
+			let invoiceItemState = [...this.state.invoiceItems];
+			invoiceItems = invoiceItemState.map((item, index) => {
 				return (
 					<tr key={index}>
 						<td>{index + 1}</td>
+						<td>{item.hsn_sac_No}</td>
 						<td>{item.description}</td>
 						<td>{item.rate}</td>
 						<td>{item.quantity}</td>
@@ -156,7 +175,7 @@ class PrepareInvoice extends Component {
 				);
 			});
 		} else {
-			billItems = (
+			invoiceItems = (
 				<tr>
 					<h3>Loading ...</h3>
 				</tr>
@@ -166,12 +185,12 @@ class PrepareInvoice extends Component {
 		let previewInvoice = null;
 		if (
 			this.state.previewInvoice &&
-			this.state.billDetails !== null &&
-			this.state.billItems
+			this.state.invoiceDetails !== null &&
+			this.state.invoiceItems
 		) {
 			const invoiceDetails = {
-				...this.state.billDetails,
-				invoiceItems: [...this.state.billItems],
+				...this.state.invoiceDetails,
+				invoiceItems: [...this.state.invoiceItems],
 				...this.state.listItemAmountTotal,
 			};
 			previewInvoice = <Invoice invoiceDetails={invoiceDetails} />;
@@ -183,7 +202,7 @@ class PrepareInvoice extends Component {
 						<div className="col-7">
 							<div className="form-group row">
 								<label
-									for="name"
+									htmlFor="name"
 									className="col-sm-2 col-form-label"
 								>
 									Name
@@ -194,16 +213,16 @@ class PrepareInvoice extends Component {
 										className="form-control"
 										id="name"
 										onChange={
-											this.billDetailsOnChangeHandler
+											this.invoiceDetailsOnChangeHandler
 										}
-										value={this.state.billDetails.name}
+										value={this.state.invoiceDetails.name}
 										name="name"
 									/>
 								</div>
 							</div>
 							<div className="form-group row">
 								<label
-									for="phone"
+									htmlFor="phone"
 									className="col-sm-2 col-form-label"
 								>
 									Phone
@@ -214,16 +233,16 @@ class PrepareInvoice extends Component {
 										className="form-control"
 										id="phone"
 										onChange={
-											this.billDetailsOnChangeHandler
+											this.invoiceDetailsOnChangeHandler
 										}
-										value={this.state.billDetails.phone}
+										value={this.state.invoiceDetails.phone}
 										name="phone"
 									/>
 								</div>
 							</div>
 							<div className="form-group row">
 								<label
-									for="address"
+									htmlFor="address"
 									className="col-sm-2 col-form-label"
 								>
 									Address
@@ -234,9 +253,11 @@ class PrepareInvoice extends Component {
 										className="form-control"
 										id="address"
 										onChange={
-											this.billDetailsOnChangeHandler
+											this.invoiceDetailsOnChangeHandler
 										}
-										value={this.state.billDetails.address}
+										value={
+											this.state.invoiceDetails.address
+										}
 										name="address"
 									/>
 								</div>
@@ -259,9 +280,11 @@ class PrepareInvoice extends Component {
 										name="invoiceNo"
 										placeholder="invoice no."
 										onChange={
-											this.billDetailsOnChangeHandler
+											this.invoiceDetailsOnChangeHandler
 										}
-										value={this.state.billDetails.invoiceNo}
+										value={
+											this.state.invoiceDetails.invoiceNo
+										}
 									/>
 								</div>
 							</div>
@@ -280,37 +303,36 @@ class PrepareInvoice extends Component {
 										name="invoiceDate"
 										placeholder="date"
 										onChange={
-											this.billDetailsOnChangeHandler
+											this.invoiceDetailsOnChangeHandler
 										}
 										value={
-											this.state.billDetails.invoiceDate
+											this.state.invoiceDetails
+												.invoiceDate
 										}
 									/>
 								</div>
 							</div>
 							<div className="form-group row">
 								<label
-									htmlFor="billAmount"
+									htmlFor="totalInvoiceAmount"
 									className="col-sm-3 col-form-label"
 								>
 									Amount
 								</label>
 								<div className="col-sm-5">
 									<input
-										type="text"
+										type="number"
 										className="form-control"
-										id="billAmount"
-										name="billAmount"
+										id="totalInvoiceAmount"
+										name="totalInvoiceAmount"
 										placeholder="0.00"
-										value={
-											this.state.billDetails.billAmount
-										}
+										value={this.state.invoiceDetails.totalInvoiceAmount}
 										disabled
 									/>
 								</div>
 							</div>
 						</div>
-						{/* {JSON.stringify(this.state.billDetails)} */}
+						{JSON.stringify(this.state.invoiceDetails)}
 					</div>
 
 					{/* items form  */}
@@ -323,6 +345,7 @@ class PrepareInvoice extends Component {
 						<thead>
 							<tr>
 								<th>SR.</th>
+								<th>SN/SAC</th>
 								<th>Item Name</th>
 								<th>Price</th>
 								<th>Quantity</th>
@@ -331,7 +354,7 @@ class PrepareInvoice extends Component {
 							</tr>
 						</thead>
 						<tbody>
-							{billItems}
+							{invoiceItems}
 							<tr className="border ">
 								<td colSpan="4">Total</td>
 								<td>{this.state.listItemAmountTotal}</td>
@@ -345,7 +368,7 @@ class PrepareInvoice extends Component {
 					<p>Items Details</p>
 					<div className="form-group row">
 						<label
-							for="description"
+							htmlFor="description"
 							className="col-sm-1 col-form-label"
 						>
 							Description
@@ -355,7 +378,7 @@ class PrepareInvoice extends Component {
 								type="text"
 								className="form-control"
 								id="description"
-								onChange={this.billItemOnChangeHandler}
+								onChange={this.invoiceItemOnChangeHandler}
 								value={this.state.item.description}
 								name="description"
 							/>
@@ -364,7 +387,23 @@ class PrepareInvoice extends Component {
 
 					<div className="form-group row">
 						<label
-							for="quantity"
+							htmlFor="hsn_sac"
+							className="col-sm-1 col-form-label"
+						>
+							HSN/SAC
+						</label>
+						<div className="col-sm-2">
+							<input
+								type="text"
+								className="form-control "
+								id="hsn_sac"
+								onChange={this.invoiceItemOnChangeHandler}
+								value={this.state.item.hsn_sac_No}
+								name="hsn_sac_No"
+							/>
+						</div>
+						<label
+							htmlFor="quantity"
 							className="col-sm-1 col-form-label"
 						>
 							Quantity
@@ -374,13 +413,13 @@ class PrepareInvoice extends Component {
 								type="number"
 								className="form-control "
 								id="quantity"
-								onChange={this.billItemOnChangeHandler}
+								onChange={this.invoiceItemOnChangeHandler}
 								value={this.state.item.quantity}
 								name="quantity"
 							/>
 						</div>
 
-						<label for="rate" className="col-sm-1 col-form-label">
+						<label htmlFor="rate" className="col-sm-1 col-form-label">
 							Rate
 						</label>
 						<div className="col-sm-2">
@@ -388,14 +427,14 @@ class PrepareInvoice extends Component {
 								type="number"
 								className="form-control"
 								id="rate"
-								onChange={this.billItemOnChangeHandler}
+								onChange={this.invoiceItemOnChangeHandler}
 								value={this.state.item.rate}
 								name="rate"
 							/>
 						</div>
 
 						<label
-							for="itemAmount"
+							htmlFor="itemAmount"
 							className="col-sm-1 col-form-label"
 						>
 							Amount
@@ -405,13 +444,14 @@ class PrepareInvoice extends Component {
 								type="number"
 								className="form-control"
 								id="itemAmount"
-								// onChange={this.billItemOnChangeHandler}
+								// onChange={this.invoiceItemOnChangeHandler}
 								value={this.state.item.amount}
 								name="amount"
 								disabled
 							/>
 						</div>
 					</div>
+					{JSON.stringify(this.state.item)}
 					<div className="row">
 						<div className="col-6"></div>
 					</div>
@@ -428,73 +468,66 @@ class PrepareInvoice extends Component {
 						</button>
 					</div>
 					{/* tax rate ,tax amount and grand total  */}
-					<div className="col-3 ">
-						<label htmlFor="tax">Tax:</label>
-						<p id="tax" className="form-control">
-							{this.state.billDetails.taxRate}%
-						</p>
-
-						<label htmlFor="taxType">Tax Type:</label>
+					<div className="col-3">
+						<label htmlFor="igst">IGST:</label>
 						<input
-							type="text"
-							id="taxType"
+							type="number"
+							id="igst"
 							className="form-control"
-							placeholder="SGST/CGST..."
-							onChange={this.billDetailsOnChangeHandler}
-							value={this.state.billDetails.taxType}
-							name="taxType"
+							onChange={this.invoiceDetailsOnChangeHandler}
+							value={this.state.invoiceDetails.igst}
+							name="igst"
+						/>
+						<label htmlFor="cgst">CGST:</label>
+						<input
+							type="number"
+							id="cgst"
+							className="form-control"
+							onChange={this.invoiceDetailsOnChangeHandler}
+							value={this.state.invoiceDetails.cgst}
+							name="cgst"
+						/>
+						<label htmlFor="sgst">SGST:</label>
+						<input
+							type="number"
+							id="sgst"
+							className="form-control"
+							onChange={this.invoiceDetailsOnChangeHandler}
+							value={this.state.invoiceDetails.sgst}
+							name="sgst"
 						/>
 						<label htmlFor="taxAmount">Tax Amount:</label>
 						<input
-							type="text"
+							type="number"
 							id="taxAmount"
 							className="form-control"
-							onChange={this.billDetailsOnChangeHandler}
-							value={this.state.billDetails.taxAmount}
+							// onChange={this.invoiceDetailsOnChangeHandler}
+							value={this.state.invoiceDetails.taxAmount}
 							name="taxAmount"
 							disabled
 						/>
-
-						<label htmlFor="totalBillAmount">Total:</label>
+						<label htmlFor="totalInvoiceAmount">Total:</label>
 						<input
-							type="text"
-							id="totalBillAmount"
+							type="number"
+							id="totalInvoiceAmount"
 							className="form-control"
-							onChange={this.billDetailsOnChangeHandler}
-							value={this.state.billDetails.billAmount}
-							name="billAmount"
+							onChange={this.invoiceDetailsOnChangeHandler}
+							value={this.state.invoiceDetails.totalInvoiceAmount}
+							name="totalInvoiceAmount"
 							disabled
 						/>
-
-						<label
-							htmlFor="igst"
-							className="col-sm-3 col-form-label"
-						>
-							IGST
-						</label>
-						<div className="col-sm-5">
-							<input
-								type="text"
-								className="form-control"
-								id="igst"
-								name="igst"
-								placeholder=" tax rate %"
-								onChange={this.billDetailsOnChangeHandler}
-								value={this.state.billDetails}
-							/>
-						</div>
-
 						<button
 							className="btn btn-success btn mt-2"
-							onChange={this.calculateAmount}
+							onClick={this.calculateAmount}
 						>
 							Done
 						</button>
 					</div>
+					{JSON.stringify(this.state.invoiceDetails)}
 				</div>
 				<br />
 				{previewInvoice}
-				<button type="button" class="btn btn-success btn-lg m-2">
+				<button type="button" className="btn btn-success btn-lg m-2">
 					Save
 				</button>
 			</div>
