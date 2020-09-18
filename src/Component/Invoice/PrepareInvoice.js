@@ -2,14 +2,15 @@ import React, { Component } from "react";
 // import { Link, Route, Switch } from "react-router-dom";
 import "./PrepareInvoice.css";
 import Invoice from "./Invoice";
-import "../dbApi/PrepareInvoiceDbApi";
+const {ipcRenderer} = window.require('electron');
+
 class PrepareInvoice extends Component {
 	state = {
 		invoiceDetails: {
 			name: "Narendra malviya",
-			phone: "+917742401557",
 			address: "Pali rajasthann India",
-			invoiceNo: "1012020",
+			phone: "+917742401557",
+			invoiceNo: "1012024565",
 			invoiceDate: "2020-09-01",
 			// igst ,cgst,sgst type taxes
 			igst: 10,
@@ -17,19 +18,21 @@ class PrepareInvoice extends Component {
 			sgst: 7,
 			totalTaxAmount: 0,
 			totalInvoiceAmount: 0,
-			paymentStatus: "NULL",
-			invoiceType: "",
+			invoiceType: "sales",
+			partyAccountNo: "70290124",
 		},
 		invoiceItems: [
 			{
+				invoiceDetailsId:"",
 				description: "10 pcs. of paper rim",
 				hsn_sac_No: "2321",
 				quantity: 12,
 				rate: 120,
 				amount: 1440,
 			},
-			{ description: "5 pcs. pen", quantity: 10, rate: 15, amount: 150 },
+			{ invoiceDetailsId:"",description: "5 pcs. pen",hsn_sac_No: "2321", quantity: 10, rate: 15, amount: 150 },
 			{
+				invoiceDetailsId:"",
 				description: "10 pcs. ink caritage",
 				hsn_sac_No: "2321",
 				quantity: 10,
@@ -38,6 +41,7 @@ class PrepareInvoice extends Component {
 			},
 		],
 		item: {
+			invoiceDetailsId:"",
 			description: "10 pcs. of paper rim",
 			hsn_sac_No: "2321",
 			quantity: 10,
@@ -45,17 +49,30 @@ class PrepareInvoice extends Component {
 			amount: 1200,
 		},
 		listItemAmountTotal: 0,
-
 		previewInvoice: true,
 	};
 	componentDidMount() {
 		this.setState({
 			invoiceDetails: {
 				...this.state.invoiceDetails,
-				invoiceType: this.props.invoiceType,
+				invoiceType: "sales",
 			},
 		});
 	}
+	createInvoice = () => {
+		console.log('create invoice called!!');
+		const invoiceDetails = {...this.state.invoiceDetails}
+		const invoceItemsArray = [...this.state.invoiceItems];
+		const listItemTotalAmount = this.state.listItemAmountTotal;		
+		const invoiceData = {invoiceDetails,invoceItemsArray,listItemTotalAmount};
+		ipcRenderer.send('create-invoice',invoiceData);
+
+		ipcRenderer.once('invoice-query-result',(event,args)=>{
+			console.log(args);
+			// ipcRenderer.removeAllListeners('created-invoice-result');
+		})
+		console.log('end of function');
+	};
 	// on change handler for
 	invoiceDetailsOnChangeHandler = (event) => {
 		const { name, value } = event.target;
@@ -100,23 +117,23 @@ class PrepareInvoice extends Component {
 		const sgstTaxRate = this.state.invoiceDetails.sgst;
 
 		let taxAmount =
-				(listItemsAmount * igstTaxRate) / 100 +
-				(listItemsAmount * cgstTaxRate) / 100 +
-				(listItemsAmount * sgstTaxRate) / 100;
+			(listItemsAmount * igstTaxRate) / 100 +
+			(listItemsAmount * cgstTaxRate) / 100 +
+			(listItemsAmount * sgstTaxRate) / 100;
 		// toFixed() set two digit after decimal points
-		// returns string formeted number 
+		// returns string formeted number
 		// so place + sign before the string ,to convert string to number
 		//example :-  3445.337 --> 3445.34
-		
+
 		// final invoice amount = (tax Amount + list item amount )
-		let totalInvoiceAmount = (listItemsAmount + taxAmount);
-	
+		let totalInvoiceAmount = listItemsAmount + taxAmount;
+
 		// updating state for all amounts -> list items amount,total bill amount and tax amount
 		this.setState({
 			invoiceDetails: {
 				...this.state.invoiceDetails,
 				totalInvoiceAmount: totalInvoiceAmount,
-				taxAmount: taxAmount,
+				totalTaxAmount: taxAmount,
 			},
 			listItemAmountTotal: listItemsAmount,
 		});
@@ -314,6 +331,25 @@ class PrepareInvoice extends Component {
 							</div>
 							<div className="form-group row">
 								<label
+									htmlFor="partyAccountNo"
+									className="col-sm-3 col-form-label"
+								>
+									Account No.
+								</label>
+								<div className="col-sm-5">
+									<input
+										type="number"
+										className="form-control"
+										id="partyAccountNo"
+										placeholder="PartyAccount"
+										name="partyAccountNo"
+										value={this.state.invoiceDetails.partyAccountNo}
+										onChange={this.invoiceDetailsOnChangeHandler}
+									/>
+								</div>
+							</div>
+							<div className="form-group row">
+								<label
 									htmlFor="totalInvoiceAmount"
 									className="col-sm-3 col-form-label"
 								>
@@ -326,7 +362,10 @@ class PrepareInvoice extends Component {
 										id="totalInvoiceAmount"
 										name="totalInvoiceAmount"
 										placeholder="0.00"
-										value={this.state.invoiceDetails.totalInvoiceAmount}
+										value={
+											this.state.invoiceDetails
+												.totalInvoiceAmount
+										}
 										disabled
 									/>
 								</div>
@@ -419,7 +458,10 @@ class PrepareInvoice extends Component {
 							/>
 						</div>
 
-						<label htmlFor="rate" className="col-sm-1 col-form-label">
+						<label
+							htmlFor="rate"
+							className="col-sm-1 col-form-label"
+						>
 							Rate
 						</label>
 						<div className="col-sm-2">
@@ -496,14 +538,14 @@ class PrepareInvoice extends Component {
 							value={this.state.invoiceDetails.sgst}
 							name="sgst"
 						/>
-						<label htmlFor="taxAmount">Tax Amount:</label>
+						<label htmlFor="totalTaxAmount">Tax Amount:</label>
 						<input
 							type="number"
-							id="taxAmount"
+							id="totalTaxAmount"
 							className="form-control"
 							// onChange={this.invoiceDetailsOnChangeHandler}
-							value={this.state.invoiceDetails.taxAmount}
-							name="taxAmount"
+							value={this.state.invoiceDetails.totalTaxAmount}
+							name="totalTaxAmount"
 							disabled
 						/>
 						<label htmlFor="totalInvoiceAmount">Total:</label>
@@ -523,11 +565,14 @@ class PrepareInvoice extends Component {
 							Done
 						</button>
 					</div>
-					{JSON.stringify(this.state.invoiceDetails)}
 				</div>
 				<br />
 				{previewInvoice}
-				<button type="button" className="btn btn-success btn-lg m-2">
+				<button
+					type="button"
+					className="btn btn-success btn-lg m-2"
+					onClick={this.createInvoice}
+				>
 					Save
 				</button>
 			</div>

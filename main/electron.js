@@ -3,7 +3,7 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const isDev = require("electron-is-dev");
-
+require('./dbEvents');
 let mainWindow;
 
 function createWindow() {
@@ -33,3 +33,4 @@ app.on("activate", () => {
 		createWindow();
 	}
 });
+exports.mainWindow = mainWindow;

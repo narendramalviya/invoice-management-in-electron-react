@@ -5,7 +5,7 @@ var connection = mysql.createConnection({
 	host: "localhost",
 	user: "root",
 	password: "12345", // or the original password : 'apaswword'
-	database: "mysql",
+	database: "invoiceManagement",
 });
 
 // connect to mysql
@@ -14,6 +14,7 @@ connection.connect(function (err) {
 	if (err) {
 		console.log("error code ", err.code);
 		console.log("err fatal", err.fatal);
+		throw err;
 	} else {
 		console.log("db connected");
 	}
