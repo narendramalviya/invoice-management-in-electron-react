@@ -3,10 +3,9 @@ const { connection } = require("./dbConfig");
 exports.getInvoiceItemsById = (event, invoiceId) => {
 	connection.query(
 		`SELECT * FROM invoiceItems WHERE invoiceItems.invoiceDetailsId =${invoiceId}`,
-		(err, result) => {
-		
+		(err, result) => {		
 			if (err) throw err;
-			console.log("invoiceItems :- ", result);
+			// console.log("invoiceItems :- ", result);
 			event.reply("invoice-items-by-id", result);
 		}
 	);

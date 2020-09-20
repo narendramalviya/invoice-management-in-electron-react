@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import { Link, Route, Switch } from "react-router-dom";
 import "./PrepareInvoice.css";
-import ViewInvoice from "../Sales/ViewInvoice";
+import Invoice from './Invoice';
 const {ipcRenderer} = window.require('electron');
 
 class PrepareInvoice extends Component {
@@ -13,9 +13,9 @@ class PrepareInvoice extends Component {
 			invoiceNo: "1012024565",
 			invoiceDate: "2020-09-01",
 			// igst ,cgst,sgst type taxes
-			igst: 10,
-			cgst: 5,
-			sgst: 7,
+			igstTax: 10,
+			cgstTax: 5,
+			sgstTax: 7,
 			totalTaxAmount: 0,
 			totalInvoiceAmount: 0,
 			invoiceType: "sales",
@@ -23,14 +23,14 @@ class PrepareInvoice extends Component {
 		},
 		invoiceItems: [
 			{
-				invoiceDetailsId:"",
+				invoiceDetailsId:"20",
 				description: "10 pcs. of paper rim",
 				hsn_sac_No: "2321",
 				quantity: 12,
 				rate: 120,
 				amount: 1440,
 			},
-			{ invoiceDetailsId:"",description: "5 pcs. pen",hsn_sac_No: "2321", quantity: 10, rate: 15, amount: 150 },
+			{ invoiceDetailsId:"26",description: "5 pcs. pen",hsn_sac_No: "2321", quantity: 10, rate: 15, amount: 150 },
 			{
 				invoiceDetailsId:"",
 				description: "10 pcs. ink caritage",
@@ -41,7 +41,7 @@ class PrepareInvoice extends Component {
 			},
 		],
 		item: {
-			invoiceDetailsId:"",
+			invoiceDetailsId:"24",
 			description: "10 pcs. of paper rim",
 			hsn_sac_No: "2321",
 			quantity: 10,
@@ -112,9 +112,9 @@ class PrepareInvoice extends Component {
 
 		// calulate isgt,cgst,sgst taxes amount ,based on tax rate in percentage
 
-		const igstTaxRate = this.state.invoiceDetails.igst;
-		const cgstTaxRate = this.state.invoiceDetails.cgst;
-		const sgstTaxRate = this.state.invoiceDetails.sgst;
+		const igstTaxRate = this.state.invoiceDetails.igstTax;
+		const cgstTaxRate = this.state.invoiceDetails.cgstTax;
+		const sgstTaxRate = this.state.invoiceDetails.sgstTax;
 
 		let taxAmount =
 			(listItemsAmount * igstTaxRate) / 100 +
@@ -203,14 +203,16 @@ class PrepareInvoice extends Component {
 		if (
 			this.state.previewInvoice &&
 			this.state.invoiceDetails !== null &&
-			this.state.invoiceItems
+			this.state.invoiceItems !== null
 		) {
-			const invoiceDetails = {
-				...this.state.invoiceDetails,
-				invoiceItems: [...this.state.invoiceItems],
-				...this.state.listItemAmountTotal,
-			};
-			previewInvoice = <ViewInvoice invoiceDetails={invoiceDetails} />;
+			const invoiceDetails = {...this.state.invoiceDetails};
+			const invoiceItems = {...this.state.invoiceItems};
+			console.log(invoiceDetails);
+			console.log(invoiceItems);
+			// previewInvoice = <Invoice 
+			// 						invoiceDetail={invoiceDetails} 
+			// 						invoiceItems={invoiceItems}
+			// 				 />;
 		}
 		return (
 			<div className="">
@@ -517,8 +519,8 @@ class PrepareInvoice extends Component {
 							id="igst"
 							className="form-control"
 							onChange={this.invoiceDetailsOnChangeHandler}
-							value={this.state.invoiceDetails.igst}
-							name="igst"
+							value={this.state.invoiceDetails.igstTax}
+							name="igstTax"
 						/>
 						<label htmlFor="cgst">CGST:</label>
 						<input
@@ -526,8 +528,8 @@ class PrepareInvoice extends Component {
 							id="cgst"
 							className="form-control"
 							onChange={this.invoiceDetailsOnChangeHandler}
-							value={this.state.invoiceDetails.cgst}
-							name="cgst"
+							value={this.state.invoiceDetails.cgstTax}
+							name="cgstTax"
 						/>
 						<label htmlFor="sgst">SGST:</label>
 						<input
@@ -535,8 +537,8 @@ class PrepareInvoice extends Component {
 							id="sgst"
 							className="form-control"
 							onChange={this.invoiceDetailsOnChangeHandler}
-							value={this.state.invoiceDetails.sgst}
-							name="sgst"
+							value={this.state.invoiceDetails.sgstTax}
+							name="sgstTax"
 						/>
 						<label htmlFor="totalTaxAmount">Tax Amount:</label>
 						<input

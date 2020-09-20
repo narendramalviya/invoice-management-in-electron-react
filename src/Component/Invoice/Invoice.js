@@ -7,9 +7,9 @@ const Invoice = (props) => {
 		invoiceNumber,
 		invoiceDate,
 		// igst ,cgst,sgst type taxes
-		igst,
-		cgst,
-		sgst,
+		igstTax,
+		cgstTax,
+		sgstTax,
 		totalTaxAmount,
 		totalInvoiceAmount,
 		invoiceType,
@@ -24,34 +24,24 @@ const Invoice = (props) => {
 	// 		rate: 120,
 	// 		amount: 1440,
 	// 	},
-	let items = props.invoiceItems.map((item, index) => (
-		<tr key={index+1}>
-			<td className="center">{index} </td>
+	let items = props.invoiceItems && (props.invoiceItems.map((item, index) => (
+		<tr key={index}>
+			<td className="center">{index + 1} </td>
 			<td className="left">{item.description}</td>
 			<td className="center">{item.quantity}</td>
 			<td className="right">{item.rate}</td>
 			<td className="right">{item.amount}</td>
 		</tr>
-	));
+	)))
 	return (
 		<div className="container-fluid">
-			{JSON.stringify(props.invoiceDetail)}
-			{JSON.stringify(props.invoiceItems)}
+			{/* {JSON.stringify(props.invoiceDetail)}
+			{JSON.stringify(props.invoiceItems)} */}
 			<div id="ui-view" data-select2-id="ui-view">
 				<div>
 					<div className="card">
 						<div className="card-header">
-							Invoice
-							<strong>
-								{/* {this.state.invoiceDetail.invoiceNo} */}
-							</strong>
-							<button
-								className="btn btn-sm btn-secondary float-right mr-1 d-print-none"
-								onClick={window.print}
-								data-abc="true"
-							>
-								<i className="fa fa-print"></i> Print
-							</button>
+							<h3>Invoice</h3>
 						</div>
 						<div className="card-body">
 							<div className="row mb-4">
@@ -73,18 +63,17 @@ const Invoice = (props) => {
 									<div>{address}</div>
 
 									<div>Phone :{phone}</div>
-                                    <div>Email: example@gmail.com</div>
-								
+									<div>Email: example@gmail.com</div>
 								</div>
 								<div className="col-sm-4">
 									<h6 className="mb-3">Details:</h6>
 									<div>
-										Invoice No : 
+										Invoice No :
 										<strong>{invoiceNumber}</strong>
 									</div>
 									<div>
 										{/* convert long date formet to short using Date*/}
-                                        Date :
+										Date :
 										{new Date(
 											invoiceDate
 										).toLocaleDateString("en-US", {
@@ -95,7 +84,9 @@ const Invoice = (props) => {
 									</div>
 									<div>GSTNo: NYC09090390</div>
 									<div>Account Name : {name}</div>
-                                    <div>Party Account No. :{partyAccountNo}</div>
+									<div>
+										Party Account No. :{partyAccountNo}
+									</div>
 									<div>
 										<strong>
 											SWIFT code: 99 8888 7777 6666 5555
@@ -104,57 +95,96 @@ const Invoice = (props) => {
 								</div>
 							</div>
 							<div className="table-responsive-sm">
-								<table className="table table-striped">
+								<table className="table table-striped" style={{'borderBottom': '1px solid gainsboro'}}>
 									<thead>
-                                        <tr>
-                                        <td>SR.</td>
-                                        <td>Description</td>
-                                        <td>Quantity</td>
-                                        <td>Rate</td>
-                                        <td>Amount</td>
-                                        </tr>
-                                    </thead>
+										<tr>
+											<td>SR.</td>
+											<td>Description</td>
+											<td>Quantity</td>
+											<td>Rate</td>
+											<td>Amount</td>
+										</tr>
+									</thead>
 									<tbody>{items}</tbody>
 								</table>
+
 							</div>
 							<div className="row">
-								<div className="col-lg-4 col-sm-5">
+								{/* <div className="col-lg-4 col-sm-5">
 									Lorem ipsum dolor sit amet, consectetur
 									adipisicing elit, sed do eiusmod tempor
 									incididunt ut labore et dolore magna aliqua.
 									Ut enim ad minim veniam.
-								</div>
+								</div> */}
 								<div className="col-lg-4 col-sm-5 ml-auto">
 									<table className="table table-clear">
 										<tbody>
 											<tr>
 												<td className="left">
-                                    <strong>Subtotal : </strong>
+													<strong>Subtotal : </strong>
 												</td>
 												<td className="right">
-													{totalTaxAmount}
-												</td>
-											</tr>
-											<tr>
-												
-												<td className="right">
-													{}
+													&#8377;
+													{(
+														totalInvoiceAmount -
+														totalTaxAmount
+													).toFixed(2)}
 												</td>
 											</tr>
 											<tr>
 												<td className="left">
-													<strong>VAT (10%)</strong>
+													<strong>IGST : </strong>
 												</td>
 												<td className="right">
-													$679,76
+													{/* if tax 0 then place it zero */}
+													{igstTax || 0}%
 												</td>
 											</tr>
+											<tr>
+												<td className="left">
+													<strong>CGST : </strong>
+												</td>
+												<td className="right">
+													{cgstTax || 0}%
+												</td>
+											</tr>
+											<tr>
+												<td className="left">
+													<strong>SGST : </strong>
+												</td>
+												<td className="right">
+													{sgstTax || 0}%
+												</td>
+											</tr>
+											<tr>
+												<td className="left">
+													<strong>
+														Tax Amount :
+													</strong>
+												</td>
+												<td className="right">
+													&#8377;
+													{totalTaxAmount.toFixed(
+														2
+													) || 0}
+												</td>
+											</tr>
+											<tr>
+												<td className="right">{}</td>
+												<td className="right">{}</td>
+											</tr>
+											<tr></tr>
 											<tr>
 												<td className="left">
 													<strong>Total</strong>
 												</td>
 												<td className="right">
-													<strong>$7.477,36</strong>
+													<strong>
+														&#8377;
+														{totalInvoiceAmount.toFixed(
+															2
+														) || 0}
+													</strong>
 												</td>
 											</tr>
 										</tbody>
@@ -166,6 +196,13 @@ const Invoice = (props) => {
 										}
 									>
 										Close
+									</button>
+									<button
+										className="btn btn-info m-1"
+										onClick={window.print}
+										data-abc="true"
+									>
+										<i className="fa fa-print"></i> Print
 									</button>
 								</div>
 							</div>
