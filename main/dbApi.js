@@ -1,21 +1,34 @@
 const { connection } = require("./dbConfig");
 
+exports.getInvoiceItemsById = (event, invoiceId) => {
+	connection.query(
+		`SELECT * FROM invoiceItems WHERE invoiceItems.invoiceDetailsId =${invoiceId}`,
+		(err, result) => {
+		
+			if (err) throw err;
+			console.log("invoiceItems :- ", result);
+			event.reply("invoice-items-by-id", result);
+		}
+	);
+};
+
 exports.getAllInvoices = (event) => {
 	// console.log('main proccess',args);
 	let invoices = {};
-	connection.query("SELECT * FROM invoiceDetails RIGHT JOIN invoiceItems ON invoiceDetails.id = invoiceItems.invoiceDetailsId", (err, result) => {
+	connection.query("SELECT * FROM invoiceDetails", (err, result) => {
 		// if (err) throw err;
 		// // console.log('invoices :- ',result);
 		// invoices.invoiceDetails = result;
 		// connection.query("SELECT * FROM invoiceItems", (err, result) => {
-			if (err) throw err;
-			// console.log("invoiceItems :- ", result);
-			invoices = result;
+		if (err) throw err;
+		// console.log("invoiceItems :- ", result);
+		invoices = result;
 
-			event.reply("all-invoices", invoices);
-		});
+		event.reply("all-invoices", invoices);
+	});
 	// });
 };
+// helper function for createInvoice();
 const insertInvoiceValues = (invoiceId, invoiceItems, event) => {
 	let listItemArray = [];
 	for (const item of invoiceItems) {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 // import { Link, Route, Switch } from "react-router-dom";
 import "./PrepareInvoice.css";
-import Invoice from "./Invoice";
+import ViewInvoice from "../Sales/ViewInvoice";
 const {ipcRenderer} = window.require('electron');
 
 class PrepareInvoice extends Component {
@@ -210,7 +210,7 @@ class PrepareInvoice extends Component {
 				invoiceItems: [...this.state.invoiceItems],
 				...this.state.listItemAmountTotal,
 			};
-			previewInvoice = <Invoice invoiceDetails={invoiceDetails} />;
+			previewInvoice = <ViewInvoice invoiceDetails={invoiceDetails} />;
 		}
 		return (
 			<div className="">
