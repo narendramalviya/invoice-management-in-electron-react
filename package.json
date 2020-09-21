@@ -55,6 +55,8 @@
 			"last 1 safari version"
 		]
 	},
+	
+
 	"main": "main/electron.js",
 	"homepage": "./"
 }
