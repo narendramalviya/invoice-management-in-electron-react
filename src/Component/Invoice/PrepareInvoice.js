@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import "./PrepareInvoice.css";
 import Invoice from './Invoice';
 const {ipcRenderer} = window.require('electron');
-
+// TODO: form validation
 class PrepareInvoice extends Component {
 	state = {
 		invoiceDetails: {
@@ -18,7 +18,7 @@ class PrepareInvoice extends Component {
 			sgstTax: 7,
 			totalTaxAmount: 0,
 			totalInvoiceAmount: 0,
-			invoiceType: "sales",
+			invoiceType: "",
 			partyAccountNo: "70290124",
 		},
 		invoiceItems: [
@@ -55,9 +55,10 @@ class PrepareInvoice extends Component {
 		this.setState({
 			invoiceDetails: {
 				...this.state.invoiceDetails,
-				invoiceType: "sales",
+				invoiceType: this.props.invoiceType,
 			},
 		});
+
 	}
 	createInvoice = () => {
 		console.log('create invoice called!!');
@@ -65,13 +66,15 @@ class PrepareInvoice extends Component {
 		const invoceItemsArray = [...this.state.invoiceItems];
 		const listItemTotalAmount = this.state.listItemAmountTotal;		
 		const invoiceData = {invoiceDetails,invoceItemsArray,listItemTotalAmount};
+		
 		ipcRenderer.send('create-invoice',invoiceData);
-
 		ipcRenderer.once('invoice-query-result',(event,args)=>{
+			// TODO: com
+			
+			alert(JSON.stringify(args));
 			console.log(args);
 			// ipcRenderer.removeAllListeners('created-invoice-result');
 		})
-		console.log('end of function');
 	};
 	// on change handler for
 	invoiceDetailsOnChangeHandler = (event) => {
@@ -166,7 +169,8 @@ class PrepareInvoice extends Component {
 		});
 	};
 	render() {
-		const currentPath = this.props.match.path;
+		
+		console.log(this.state.invoiceDetails.invoiceType);
 		// selected items list
 		let invoiceItems = "";
 		if (this.state.invoiceItems !== null) {
@@ -207,8 +211,8 @@ class PrepareInvoice extends Component {
 		) {
 			const invoiceDetails = {...this.state.invoiceDetails};
 			const invoiceItems = {...this.state.invoiceItems};
-			console.log(invoiceDetails);
-			console.log(invoiceItems);
+			// console.log(invoiceDetails);
+			// console.log(invoiceItems);
 			// previewInvoice = <Invoice 
 			// 						invoiceDetail={invoiceDetails} 
 			// 						invoiceItems={invoiceItems}
@@ -373,7 +377,7 @@ class PrepareInvoice extends Component {
 								</div>
 							</div>
 						</div>
-						{JSON.stringify(this.state.invoiceDetails)}
+						{/* {JSON.stringify(this.state.invoiceDetails)} */}
 					</div>
 
 					{/* items form  */}
@@ -495,12 +499,12 @@ class PrepareInvoice extends Component {
 							/>
 						</div>
 					</div>
-					{JSON.stringify(this.state.item)}
+					{/* {JSON.stringify(this.state.item)} */}
 					<div className="row">
 						<div className="col-6"></div>
 					</div>
 				</div>
-				{/* {JSON.stringify(this.state.item)} */}
+			
 				{/* add item button */}
 				<div className="row mb-2">
 					<div className="col-9 mt-2">

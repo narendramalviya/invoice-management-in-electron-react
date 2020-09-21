@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-
+const {ipcRenderer} = window.require('electron');
+// TODO: form validation
 class Create_account extends Component {
 	state = {
 		user: {
@@ -17,18 +18,10 @@ class Create_account extends Component {
 		this.setState({ [event.target.name]: event.target.value });
 	};
 	submitHandler = () => {
-		console.log("clicked");
-		// TODO: 
-		// fetch("http://localhost:7000/api/create-account", {
-		// 	method: "post",
-		// 	headers: {
-		// 		"Content-Type": "application/json",
-		// 	},
-		// 	body: JSON.stringify(this.state),
-		// })
-		// 	.then((response) => response.json())
-		// 	.then((result) => console.log(result))
-		// 	.catch((err) => console.log(err));
+		ipcRenderer.send('create-account',this.state.user);
+		ipcRenderer.on('create-account-result',(event,result)=>{
+			console.log('result from create event - ',result);
+		})
 	};
 	render() {
 		return (

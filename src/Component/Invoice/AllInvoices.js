@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ViewInvoice from "./ViewInvoice";
 
 const { ipcRenderer } = window.require("electron");
-class SalesInvoices extends Component {
+class AllInvoices extends Component {
 	state = {
 		// array of invoices
 		invoices: null,
@@ -14,7 +14,7 @@ class SalesInvoices extends Component {
 
 	componentDidMount() {
 		// console.log("component did mount!!");
-		ipcRenderer.send("get-all-invoices");
+		ipcRenderer.send("get-all-invoices",this.props.invoiceType);
 		ipcRenderer.once("all-invoices", (event, args) => {
 			this.setState({
 				invoices: args,
@@ -104,7 +104,7 @@ class SalesInvoices extends Component {
 		}
 		return (
 			<div>
-				<h1>All sales Invoices Apear Here!!</h1>
+				<h1>All {this.props.invoiceType} Invoices :</h1>
 				<table className="table table-hover" style={tableStyle}>
 					<thead>
 						<tr>
@@ -127,4 +127,4 @@ class SalesInvoices extends Component {
 		);
 	}
 }
-export default SalesInvoices;
+export default AllInvoices;

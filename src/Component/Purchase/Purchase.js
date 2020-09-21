@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import "./Sales.css";
+import "./Purchase.css";
 import { Link, Switch, Route } from "react-router-dom";
 import PrepareInvoice from "../Invoice/PrepareInvoice";
 
 import AllInvoices from "../Invoice/AllInvoices";
-class Sales extends Component {
+class Purchase extends Component {
 	render() {
-		const invoiceType = "sales";
+		const invoiceType = "purchase";
 		const currentPath = this.props.match.path;
 		return (
 			<div className="">
@@ -32,18 +32,18 @@ class Sales extends Component {
 						</ul>
 					</div>
 					<div className="col-10 border border-success rounded-sm">
+						
 						<Switch>
+							
 							<Route
+								
 								path={`${currentPath}/prepare-invoice`}
-								render={() => (
-									<PrepareInvoice invoiceType={invoiceType} />
-								)}
+								render={()=><PrepareInvoice invoiceType={invoiceType}/>}
 							/>
 							<Route
+								
 								path={`${currentPath}/`}
-								render={() => (
-									<AllInvoices invoiceType={invoiceType} />
-								)}
+								render={()=><AllInvoices invoiceType={invoiceType} />}
 							/>
 						</Switch>
 					</div>
@@ -52,4 +52,4 @@ class Sales extends Component {
 		);
 	}
 }
-export default Sales;
+export default Purchase;

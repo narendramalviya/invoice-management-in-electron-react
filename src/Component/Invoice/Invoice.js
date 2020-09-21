@@ -24,15 +24,66 @@ const Invoice = (props) => {
 	// 		rate: 120,
 	// 		amount: 1440,
 	// 	},
-	let items = props.invoiceItems && (props.invoiceItems.map((item, index) => (
-		<tr key={index}>
-			<td className="center">{index + 1} </td>
-			<td className="left">{item.description}</td>
-			<td className="center">{item.quantity}</td>
-			<td className="right">{item.rate}</td>
-			<td className="right">{item.amount}</td>
-		</tr>
-	)))
+	let items =
+		props.invoiceItems &&
+		props.invoiceItems.map((item, index) => (
+			<tr key={index}>
+				<td className="center">{index + 1} </td>
+				<td className="left">{item.description}</td>
+				<td className="center">{item.quantity}</td>
+				<td className="right">{item.rate}</td>
+				<td className="right">{item.amount}</td>
+			</tr>
+		));
+	let company = "";
+	let customer = "";
+	if (invoiceType === "sales") {
+		company = (
+			<>
+				<div>
+					<strong>Mahendra Texiles</strong>
+				</div>
+				<div>241,Bheru Nagar, Mandiya Road</div>
+				<div>Pali, Marwar(Rajasthan) 306401</div>
+				<div>Email: bhanwarpatel@gmail.com</div>
+				<div>Phone: +919413261176</div>
+			</>
+		);
+		customer = (
+			<>
+				<div>
+					<strong>{name}</strong>
+				</div>
+				<div>{address}</div>
+
+				<div>Phone :{phone}</div>
+				<div>Email: example@gmail.com</div>
+			</>
+		);
+	} else {
+		company = (
+			<>
+				<div>
+					<strong>{name}</strong>
+				</div>
+				<div>{address}</div>
+
+				<div>Phone :{phone}</div>
+				<div>Email: example@gmail.com</div>
+			</>
+		);
+		customer = (
+			<>
+				<div>
+					<strong>Mahendra Texiles</strong>
+				</div>
+				<div>241,Bheru Nagar, Mandiya Road</div>
+				<div>Pali, Marwar(Rajasthan) 306401</div>
+				<div>Email: bhanwarpatel@gmail.com</div>
+				<div>Phone: +919413261176</div>
+			</>
+		);
+	}
 	return (
 		<div className="container-fluid">
 			{/* {JSON.stringify(props.invoiceDetail)}
@@ -47,23 +98,11 @@ const Invoice = (props) => {
 							<div className="row mb-4">
 								<div className="col-sm-4">
 									<h6 className="mb-3">Company</h6>
-									<div>
-										<strong>Mahendra Texiles</strong>
-									</div>
-									<div>241,Bheru Nagar, Mandiya Road</div>
-									<div>Pali, Marwar(Rajasthan) 306401</div>
-									<div>Email: bhanwarpatel@gmail.com</div>
-									<div>Phone: +919413261176</div>
+									{company}
 								</div>
 								<div className="col-sm-4">
 									<h6 className="mb-3">To:</h6>
-									<div>
-										<strong>{name}</strong>
-									</div>
-									<div>{address}</div>
-
-									<div>Phone :{phone}</div>
-									<div>Email: example@gmail.com</div>
+									{customer}
 								</div>
 								<div className="col-sm-4">
 									<h6 className="mb-3">Details:</h6>
@@ -95,7 +134,12 @@ const Invoice = (props) => {
 								</div>
 							</div>
 							<div className="table-responsive-sm">
-								<table className="table table-striped" style={{'borderBottom': '1px solid gainsboro'}}>
+								<table
+									className="table table-striped"
+									style={{
+										borderBottom: "1px solid gainsboro",
+									}}
+								>
 									<thead>
 										<tr>
 											<td>SR.</td>
@@ -107,7 +151,6 @@ const Invoice = (props) => {
 									</thead>
 									<tbody>{items}</tbody>
 								</table>
-
 							</div>
 							<div className="row">
 								{/* <div className="col-lg-4 col-sm-5">

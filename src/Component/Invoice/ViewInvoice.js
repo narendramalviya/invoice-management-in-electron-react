@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Invoice from "../Invoice/Invoice";
+import Invoice from "./Invoice";
 const { ipcRenderer } = window.require("electron");
 class ViewInvoice extends Component {
 	state = {
