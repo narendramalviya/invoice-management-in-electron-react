@@ -16,6 +16,65 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `account`
+--
+
+DROP TABLE IF EXISTS `account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `account` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `accountNo` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `address` text,
+  `balance` float DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `account`
+--
+
+LOCK TABLES `account` WRITE;
+/*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES (1,1,'nkmalviya','7742401557','hemawas pali rajasthan',3000),(2,2,'shiv malviya','9928695184','hemawas pali rajas',-20000),(3,10,'bl patel','+91995273628','pali rajasthan,india 306401',88000),(4,12,'bharat seervi','7723423435','Hemawas pali rajasthan',0);
+/*!40000 ALTER TABLE `account` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `accountStatement`
+--
+
+DROP TABLE IF EXISTS `accountStatement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `accountStatement` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `accountId` int NOT NULL,
+  `date` date NOT NULL,
+  `description` text NOT NULL,
+  `transectionType` varchar(45) NOT NULL,
+  `transectionAmount` float NOT NULL,
+  `lastBalance` float NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `accountStatement`
+--
+
+LOCK TABLES `accountStatement` WRITE;
+/*!40000 ALTER TABLE `accountStatement` DISABLE KEYS */;
+INSERT INTO `accountStatement` VALUES (1,1,'2020-09-01','saless 82896386','debit',100000,-100000),(2,1,'2020-09-05','sales reccive 82896386','credit',100000,0),(3,2,'2020-09-01','saless 12456','debit',100000,-100000),(4,2,'2020-09-01','saless  reccive 12456','credit',100000,0),(7,2,'2020-09-21','for purchases','debit',20000,-20000),(8,1,'2020-09-21','nk for purchases','credit',35000,35000),(9,1,'2020-09-21','some more purchases','debit',20000,15000),(10,1,'2020-09-21','more puchasess123213','debit',12000,3000),(11,3,'2020-09-21','for purchases','debit',20000,100000),(12,3,'2020-09-21','some more  purchases','debit',12000,88000);
+/*!40000 ALTER TABLE `accountStatement` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `invoiceDetails`
 --
 
@@ -39,7 +98,7 @@ CREATE TABLE `invoiceDetails` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `invoiceNumber_UNIQUE` (`invoiceNumber`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +107,7 @@ CREATE TABLE `invoiceDetails` (
 
 LOCK TABLES `invoiceDetails` WRITE;
 /*!40000 ALTER TABLE `invoiceDetails` DISABLE KEYS */;
-INSERT INTO `invoiceDetails` VALUES (20,'Narendra malviya','Pali rajasthann India','+917742401557','101201','2020-09-01',10,5,7,1537.8,8527.8,'sales','70290124'),(24,'Narendra malviya','Pali rajasthann India','+917742401557','237492','2020-09-01',10,5,7,1273.8,7063.8,'sales','70290124'),(26,'Narendra malviya','Pali rajasthann India','+917742401557','187785','2020-09-01',10,5,7,1273.8,7063.8,'purchase','70290124'),(27,'Narendra malviya','Pali rajasthann India','+917742401557','1012087','2020-09-16',10,5,7,660,3660,'sales','702901767'),(28,'Shiv malviya','Pali rajasthann India','+919928695184','101204675','2020-09-01',0,0,7,268.8,4108.8,'sales','70290756'),(29,'Bhanwar lal','Hemawas pali rajasthan\nIndia 306401','+91989324895','34434009','2020-09-21',8,0,0,2747.2,37087.2,'purchase','93742942'),(30,'Narendra malviya','Pali rajasthann India','+917742401557','1012024565','2020-09-01',10,5,7,1273.8,7063.8,'sales','70290124'),(32,'Narendra malviya','Pali rajasthann India','+917742401557','5645','2020-09-19',10,5,7,1273.8,7063.8,'sales','754645'),(33,'Kailash Malviya','Delhi, Haryana ,India\n30533443','+917898293432','5643534','2020-09-11',4,5,2,242158,2443600,'purchase','4659379493749'),(34,'Hemant Singh','Jodhpur ,rajasthann India\n3053532','+91388364566435','75565','2020-08-14',6,0,0,27780,490780,'sales','8686686676'),(35,'Yash sharma','Pali rajasthann India','+917575676565','10126454','2020-09-17',10,5,7,1240.8,6880.8,'sales','747456466'),(36,'Yash Sharma','Pali rajasthann India','+91993743834','56456456','2020-09-12',10,0,0,564,6204,'sales','93475973457');
+INSERT INTO `invoiceDetails` VALUES (20,'Narendra malviya','Pali rajasthann India','+917742401557','101201','2020-09-01',10,5,7,1537.8,8527.8,'sales','70290124'),(24,'Narendra malviya','Pali rajasthann India','+917742401557','237492','2020-09-01',10,5,7,1273.8,7063.8,'sales','70290124'),(26,'Narendra malviya','Pali rajasthann India','+917742401557','187785','2020-09-01',10,5,7,1273.8,7063.8,'purchase','70290124'),(27,'Narendra malviya','Pali rajasthann India','+917742401557','1012087','2020-09-16',10,5,7,660,3660,'sales','702901767'),(28,'Shiv malviya','Pali rajasthann India','+919928695184','101204675','2020-09-01',0,0,7,268.8,4108.8,'sales','70290756'),(29,'Bhanwar lal','Hemawas pali rajasthan\nIndia 306401','+91989324895','34434009','2020-09-21',8,0,0,2747.2,37087.2,'purchase','93742942'),(30,'Narendra malviya','Pali rajasthann India','+917742401557','1012024565','2020-09-01',10,5,7,1273.8,7063.8,'sales','70290124'),(32,'Narendra malviya','Pali rajasthann India','+917742401557','5645','2020-09-19',10,5,7,1273.8,7063.8,'sales','754645'),(33,'Kailash Malviya','Delhi, Haryana ,India\n30533443','+917898293432','5643534','2020-09-11',4,5,2,242158,2443600,'purchase','4659379493749'),(34,'Hemant Singh','Jodhpur ,rajasthann India\n3053532','+91388364566435','75565','2020-08-14',6,0,0,27780,490780,'sales','8686686676'),(35,'Yash sharma','Pali rajasthann India','+917575676565','10126454','2020-09-17',10,5,7,1240.8,6880.8,'sales','747456466'),(36,'Yash Sharma','Pali rajasthann India','+91993743834','56456456','2020-09-12',10,0,0,564,6204,'sales','93475973457'),(37,'bharat seervi','hemawas pali','+91772528428','23974973','2020-09-23',4,0,0,9200,239200,'sales','324324432'),(38,'kamlesh parmar','pali rajasthan,india','+9177912234284','43242343','2020-09-18',3,0,0,8640,296640,'purchase','12344264655');
 /*!40000 ALTER TABLE `invoiceDetails` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,7 +128,7 @@ CREATE TABLE `invoiceItems` (
   `amount` float NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +137,7 @@ CREATE TABLE `invoiceItems` (
 
 LOCK TABLES `invoiceItems` WRITE;
 /*!40000 ALTER TABLE `invoiceItems` DISABLE KEYS */;
-INSERT INTO `invoiceItems` VALUES (1,20,'10 pcs. of paper rim','2321',12,120,1440),(2,20,'5 pcs. pen','2321',10,15,150),(3,20,'10 pcs. ink caritage','2321',10,300,3000),(4,20,'10 pcs. of paper rim','2321',10,120,1200),(5,20,'10 pcs. of paper rim','2321',12,120,1440),(6,20,'5 pcs. pen','2321',10,15,150),(7,20,'10 pcs. ink caritage','2321',10,300,3000),(8,20,'10 pcs. of paper rim','2321',10,120,1200),(9,24,'10 pcs. of paper rim','2321',12,120,1440),(10,24,'5 pcs. pen','2321',10,15,150),(11,24,'10 pcs. ink caritage','2321',10,300,3000),(12,24,'10 pcs. of paper rim','2321',10,120,1200),(13,26,'10 pcs. of paper rim','2321',12,120,1440),(14,26,'5 pcs. pen','2321',10,15,150),(15,26,'10 pcs. ink caritage','2321',10,300,3000),(16,26,'10 pcs. of paper rim','2321',10,120,1200),(17,27,'10 pcs. ink caritage','2321',10,300,3000),(18,28,'10 pcs. of paper rim','2321',12,120,1440),(19,28,'10 pcs. of paper rim','2321',10,120,1200),(20,28,'10 pcs. of paper rim','2321',10,120,1200),(21,29,'10 pcs. of paper rim','2321',12,120,1440),(22,29,'5 pcs. pen','2321',10,15,150),(23,29,'10 pcs. of paper rim','443',25,230,5750),(24,29,'some thing would be purchase\n','45435',30,300,9000),(25,29,'some thing would be purchase\n','45435',30,300,9000),(26,29,'some thing would be purchase\n','45435',30,300,9000),(27,30,'10 pcs. of paper rim','2321',12,120,1440),(28,30,'5 pcs. pen','2321',10,15,150),(29,30,'10 pcs. ink caritage','2321',10,300,3000),(30,30,'10 pcs. of paper rim','2321',10,120,1200),(31,32,'10 pcs. of paper rim','2321',12,120,1440),(32,32,'5 pcs. pen','2321',10,15,150),(33,32,'10 pcs. ink caritage','2321',10,300,3000),(34,32,'10 pcs. of paper rim','2321',10,120,1200),(35,33,'10 pcs. of paper rim','2321',12,120,1440),(36,33,'dell laptop 4gb ram, 1000 Hard disk ,amd a9 proccessor ','34509437',50,30000,1500000),(37,33,'Hp laptop 4gb ram, 1000 Hard disk ,amd a9 proccessor ','45645645',20,35000,700000),(38,34,'10 pcs. ink caritage','2321',10,300,3000),(39,34,'wodden desk table 20 items','6546',20,15000,300000),(40,34,'air conditioner auto cutt off,maintain cool envirnment\n5 peas','75756',10,16000,160000),(41,35,'10 pcs. of paper rim','2321',12,120,1440),(42,35,'10 pcs. ink caritage','2321',10,300,3000),(43,35,'10 pcs. of paper rim','2321',10,120,1200),(44,36,'10 pcs. of paper rim','2321',12,120,1440),(45,36,'10 pcs. ink caritage','2321',10,300,3000),(46,36,'10 pcs. of paper rim','2321',10,120,1200);
+INSERT INTO `invoiceItems` VALUES (1,20,'10 pcs. of paper rim','2321',12,120,1440),(2,20,'5 pcs. pen','2321',10,15,150),(3,20,'10 pcs. ink caritage','2321',10,300,3000),(4,20,'10 pcs. of paper rim','2321',10,120,1200),(5,20,'10 pcs. of paper rim','2321',12,120,1440),(6,20,'5 pcs. pen','2321',10,15,150),(7,20,'10 pcs. ink caritage','2321',10,300,3000),(8,20,'10 pcs. of paper rim','2321',10,120,1200),(9,24,'10 pcs. of paper rim','2321',12,120,1440),(10,24,'5 pcs. pen','2321',10,15,150),(11,24,'10 pcs. ink caritage','2321',10,300,3000),(12,24,'10 pcs. of paper rim','2321',10,120,1200),(13,26,'10 pcs. of paper rim','2321',12,120,1440),(14,26,'5 pcs. pen','2321',10,15,150),(15,26,'10 pcs. ink caritage','2321',10,300,3000),(16,26,'10 pcs. of paper rim','2321',10,120,1200),(17,27,'10 pcs. ink caritage','2321',10,300,3000),(18,28,'10 pcs. of paper rim','2321',12,120,1440),(19,28,'10 pcs. of paper rim','2321',10,120,1200),(20,28,'10 pcs. of paper rim','2321',10,120,1200),(21,29,'10 pcs. of paper rim','2321',12,120,1440),(22,29,'5 pcs. pen','2321',10,15,150),(23,29,'10 pcs. of paper rim','443',25,230,5750),(24,29,'some thing would be purchase\n','45435',30,300,9000),(25,29,'some thing would be purchase\n','45435',30,300,9000),(26,29,'some thing would be purchase\n','45435',30,300,9000),(27,30,'10 pcs. of paper rim','2321',12,120,1440),(28,30,'5 pcs. pen','2321',10,15,150),(29,30,'10 pcs. ink caritage','2321',10,300,3000),(30,30,'10 pcs. of paper rim','2321',10,120,1200),(31,32,'10 pcs. of paper rim','2321',12,120,1440),(32,32,'5 pcs. pen','2321',10,15,150),(33,32,'10 pcs. ink caritage','2321',10,300,3000),(34,32,'10 pcs. of paper rim','2321',10,120,1200),(35,33,'10 pcs. of paper rim','2321',12,120,1440),(36,33,'dell laptop 4gb ram, 1000 Hard disk ,amd a9 proccessor ','34509437',50,30000,1500000),(37,33,'Hp laptop 4gb ram, 1000 Hard disk ,amd a9 proccessor ','45645645',20,35000,700000),(38,34,'10 pcs. ink caritage','2321',10,300,3000),(39,34,'wodden desk table 20 items','6546',20,15000,300000),(40,34,'air conditioner auto cutt off,maintain cool envirnment\n5 peas','75756',10,16000,160000),(41,35,'10 pcs. of paper rim','2321',12,120,1440),(42,35,'10 pcs. ink caritage','2321',10,300,3000),(43,35,'10 pcs. of paper rim','2321',10,120,1200),(44,36,'10 pcs. of paper rim','2321',12,120,1440),(45,36,'10 pcs. ink caritage','2321',10,300,3000),(46,36,'10 pcs. of paper rim','2321',10,120,1200),(47,37,'10 pic hp pc','1243434',10,23000,230000),(48,38,'lenovo laptop 8gb 1tb hard disk','324255',12,24000,288000);
 /*!40000 ALTER TABLE `invoiceItems` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -91,4 +150,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-09-21 16:48:54
+-- Dump completed on 2020-09-23  0:44:28

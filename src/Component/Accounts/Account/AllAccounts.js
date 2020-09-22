@@ -2,24 +2,7 @@ import React, { Component } from "react";
 const { ipcRenderer } = window.require("electron");
 class AllAccounts extends Component {
 	state = {
-		accounts: [
-			{
-				id: 1,
-				accountNo: "5",
-				name: "kailash",
-				phone: "797837473",
-				address: "pali rajasthan",
-				balance: "800000",
-			},
-		],
-		account: {
-			id: 1,
-			accountNo: "5",
-			name: "kailash",
-			phone: "797837473",
-			address: "pali rajasthan",
-			balance: "800000",
-		},
+		accounts: null
 	};
 	componentDidMount() {
 		ipcRenderer.send("get-all-accounts");
@@ -36,7 +19,7 @@ class AllAccounts extends Component {
 		// TODO: fetch all users and set in the state
 	};
 	render() {
-		console.log(this.state.accounts);
+		// console.log(this.state.accounts);
 		let allAccounts = "";
 		if (this.state.accounts !== null) {
 			const users = this.state.accounts;

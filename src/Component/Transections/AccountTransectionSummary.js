@@ -3,7 +3,7 @@ const { ipcRenderer } = window.require("electron");
 class AccountTransectionSummary extends Component {
 	state = {
 		accountInfo: {
-			id:1,
+			id: 1,
 			accountNo: 1,
 			name: "narendra malviya",
 			phone: "+917742401557",
@@ -28,18 +28,18 @@ class AccountTransectionSummary extends Component {
 		});
 	};
 	getAccountByAcNumber = () => {
-		console.log(" getAccountByAcNumber clicked");
+		// console.log(" getAccountByAcNumber clicked");
 		ipcRenderer.send("get-account-by-number", this.state.accountNo);
 		ipcRenderer.on("get-account-by-number-reply", (event, accountObj) => {
-			console.log(accountObj);
-			 this.setState({
-				accountInfo:accountObj.accountInfo,
-				transectionSummary:accountObj.accountSummary
-			 })
+			// console.log(accountObj);
+			this.setState({
+				accountInfo: accountObj.accountInfo,
+				transectionSummary: accountObj.accountSummary,
+			});
 		});
 	};
 	render() {
-		console.log(this.state);
+		// console.log(this.state);
 
 		let transectionSummary = "";
 		if (this.state.transectionSummary !== null) {
@@ -68,7 +68,12 @@ class AccountTransectionSummary extends Component {
 					</tr>
 				);
 			});
-		} else transectionSummary = <tr>Loading ...</tr>;
+		} else
+			transectionSummary = (
+				<tr>
+					<td>Loading ...</td>
+				</tr>
+			);
 
 		return (
 			<div className="border border-success rounded">
@@ -117,23 +122,23 @@ class AccountTransectionSummary extends Component {
 					<table className="border border-sucess">
 						<tbody>
 							<tr>
-								<td>Account No :</td>{" "}
+								<td>Account No :</td>
 								<td>{this.state.accountInfo.accountNo}</td>
 							</tr>
 							<tr>
-								<td>Name :</td>{" "}
+								<td>Name :</td>
 								<td>{this.state.accountInfo.name}</td>
 							</tr>
 							<tr>
-								<td>Phone :</td>{" "}
+								<td>Phone :</td>
 								<td>{this.state.accountInfo.phone}</td>
 							</tr>
 							<tr>
-								<td>Address :</td>{" "}
+								<td>Address :</td>
 								<td>{this.state.accountInfo.address}</td>
 							</tr>
 							<tr>
-								<td>Balance :</td>{" "}
+								<td>Balance :</td>
 								<td>{this.state.accountInfo.balance}</td>
 							</tr>
 						</tbody>

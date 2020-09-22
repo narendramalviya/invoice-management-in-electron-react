@@ -1,33 +1,37 @@
 import React, { Component } from "react";
-const {ipcRenderer} = window.require('electron');
+const { ipcRenderer } = window.require("electron");
 // TODO: form validation
 class Create_account extends Component {
 	state = {
 		user: {
-			accountNo: "10",
-			userId:"",
-			name: "nk",
-			lastName: "malviya",
-			phone: "7742401557",
-			address: "pali rajasthan",
-			balance: "15000",
+			accountNo: "",
+			name: "",
+			phone: "",
+			address: "",
+			balance: "",
 		},
 	};
 
 	onChangeHandler = (event) => {
-		this.setState({ [event.target.name]: event.target.value });
+		this.setState({
+			user: {
+				...this.state.user,
+				[event.target.name]: event.target.value,
+			},
+		});
 	};
 	submitHandler = () => {
-		ipcRenderer.send('create-account',this.state.user);
-		ipcRenderer.on('create-account-result',(event,result)=>{
-			console.log('result from create event - ',result);
-		})
+		ipcRenderer.send("create-account", this.state.user);
+		ipcRenderer.on("create-account-result", (event, result) => {
+			alert(JSON.stringify(result));
+			console.log("result from create event - ", result);
+		});
 	};
 	render() {
 		return (
 			<div>
 				<h1 className="">Create New Account</h1>
-				<div className="form-group">
+				<div className="form-group w-50 m-2">
 					<label htmlFor="accountNo">Account No.</label>
 					<input
 						type="number"
@@ -36,7 +40,7 @@ class Create_account extends Component {
 						name="accountNo"
 						placeholder="Enter Account No."
 						onChange={this.onChangeHandler}
-						value={this.state.accountNo}
+						value={this.state.user.accountNo}
 					/>
 					<label htmlFor="name">Name</label>
 					<input
@@ -46,17 +50,7 @@ class Create_account extends Component {
 						placeholder="Enter Name"
 						name="name"
 						onChange={this.onChangeHandler}
-						value={this.state.name}
-					/>
-					<label htmlFor="lastname">Lastname</label>
-					<input
-						type="text"
-						className="form-control"
-						id="lastname"
-						placeholder="Enter LastName"
-						name="lastName"
-						onChange={this.onChangeHandler}
-						value={this.state.lastName}
+						value={this.state.user.name}
 					/>
 					<label htmlFor="phone">Phone No.</label>
 					<input
@@ -66,7 +60,7 @@ class Create_account extends Component {
 						placeholder="Enter Phone No."
 						name="phone"
 						onChange={this.onChangeHandler}
-						value={this.state.phone}
+						value={this.state.user.phone}
 					/>
 					<label htmlFor="address">Address</label>
 					<textarea
@@ -75,7 +69,7 @@ class Create_account extends Component {
 						id="address"
 						placeholder="Enter Address"
 						name="address"
-						value={this.state.address}
+						value={this.state.user.address}
 						onChange={this.onChangeHandler}
 					/>
 					<label htmlFor="balance">Balance</label>
@@ -85,7 +79,7 @@ class Create_account extends Component {
 						id="balance"
 						placeholder="Enter Balance ex.- 10000"
 						name="balance"
-						value={this.state.balance}
+						value={this.state.user.balance}
 						onChange={this.onChangeHandler}
 					/>
 				</div>

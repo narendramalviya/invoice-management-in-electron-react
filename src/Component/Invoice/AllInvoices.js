@@ -5,7 +5,7 @@ const { ipcRenderer } = window.require("electron");
 class AllInvoices extends Component {
 	state = {
 		// array of invoices
-		invoices: null,
+		invoices: [],
 		loading: true,
 		showInvoice: false,
 		// single invoice detail

@@ -94,7 +94,7 @@ class AccountTransection extends Component {
 				ipcRenderer.once(
 					"update-account-balace-by-accountNo-reply",
 					(event, args) => {
-						alert(args);
+						alert(JSON.stringify(args));
 					}
 				);
 			};
@@ -106,7 +106,7 @@ class AccountTransection extends Component {
 		console.log(" getAccountByAcNumber clicked");
 		ipcRenderer.send("get-account-by-number", this.state.accountNo);
 		ipcRenderer.once("get-account-by-number-reply", (event, accountObj) => {
-			console.log(accountObj);
+			// console.log(accountObj);
 			this.setState({
 				accountInfo: accountObj.accountInfo,
 			});
@@ -149,23 +149,23 @@ class AccountTransection extends Component {
 					<table className="border border-sucess">
 						<tbody>
 							<tr>
-								<td>Account No :</td>{" "}
+								<td>Account No :</td>
 								<td>{this.state.accountInfo.accountNo}</td>
 							</tr>
 							<tr>
-								<td>Name :</td>{" "}
+								<td>Name :</td>
 								<td>{this.state.accountInfo.name}</td>
 							</tr>
 							<tr>
-								<td>Phone :</td>{" "}
+								<td>Phone :</td>
 								<td>{this.state.accountInfo.phone}</td>
 							</tr>
 							<tr>
-								<td>Address :</td>{" "}
+								<td>Address :</td>
 								<td>{this.state.accountInfo.address}</td>
 							</tr>
 							<tr>
-								<td>Balance :</td>{" "}
+								<td>Balance :</td>
 								<td>{this.state.accountInfo.balance}</td>
 							</tr>
 						</tbody>

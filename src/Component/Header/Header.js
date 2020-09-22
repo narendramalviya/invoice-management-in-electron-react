@@ -33,14 +33,15 @@ class Header extends Component {
 									Users
 								</NavLink>
 							</li>
-							<li className="nav-item">
-								<NavLink className="nav-link" to="/transection">
-									Transection
-								</NavLink>
-							</li>
+
 							<li className="nav-item">
 								<NavLink className="nav-link" to="/accounts">
 									Accounts
+								</NavLink>
+							</li>
+							<li className="nav-item">
+								<NavLink className="nav-link" to="/transection">
+									Transection
 								</NavLink>
 							</li>
 							<li className="nav-item">
