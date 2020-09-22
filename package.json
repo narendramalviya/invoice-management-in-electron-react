@@ -24,8 +24,9 @@
 		"wait-on": "^5.2.0"
 	},
 	"devDependencies": {
+		"electron": "^9.2.1",
 		"electron-builder": "^22.8.0",
-		"electron": "^9.2.1"
+		"electron-packager": "^15.1.0"
 	},
 	"scripts": {
 		"react-start": "react-scripts start",
@@ -38,8 +39,10 @@
 		"postinstall": "electron-builder install-app-deps",
 		"electron-start": "electron .",
 		"start-server": "nodemon server.js",
+		"electron-packager":"electron-packager . sales_management_system -- all --asar",
 		"start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\""
 	},
+	
 	"eslintConfig": {
 		"extends": "react-app"
 	},
@@ -55,8 +58,6 @@
 			"last 1 safari version"
 		]
 	},
-	
-
 	"main": "main/electron.js",
 	"homepage": "./"
 }

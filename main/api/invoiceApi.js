@@ -15,8 +15,7 @@ exports.getAllInvoices = (event,invoiceType) => {
 	// console.log('main proccess',invoiceType);
 	let invoices = {};
 	let sql=`SELECT * FROM invoiceDetails WHERE invoiceType = '${invoiceType}'`
-	connection.query(sql, (err, result) => {
-		
+	connection.query(sql, (err, result) => {	
 		if (err) throw err;
 		// console.log("invoiceItems :- ", result);
 		invoices = result;
